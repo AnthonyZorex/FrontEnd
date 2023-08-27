@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@500&display=swap');
+body{
+    background: #323232;
+    font-family: 'Ubuntu', sans-serif;
+}
+#Wether{
+    margin-top: 200px;
+    margin-left: 40%;
+    background:linear-gradient(#7FFFD4,#8A2BE2); 
+    text-align: center;
+    width: 400px;
+    height: 500px;
+    border-radius: 20px;
+    box-shadow: 0px 5px 30px 5px #E0FFFF;
+} 
+#WindSpeedT{
+    color:#E0FFFF;
+    font-size: 20px; 
+}
+#humidityT{
+    color:#E0FFFF;
+    font-size: 20px;  
+}
+.wind{
+    color:#E0FFFF;
+    font-size: 20px;
+    position: absolute;
+    
+}
+#windImg{
+    padding-right: 5px;
+}
+#humidityImg{
+    padding-right: 5px;
+}
+.humidity{
+    color:#E0FFFF;
+    font-size: 20px;
+    position: absolute;
+}
+.temp{
+    color:#E0FFFF;
+    font-size: 34px;
+    padding: 0px;
+    margin: 0px;
+}
+.city{
+    padding: 0px;
+    margin: 0px;
+    font-size: 34px;
+}
+H2,p{
+color:#E0FFFF;
+}
+#look{
+position: absolute;
+margin-top: 10px;
+border: none;
+outline: none;
+background: transparent;
+color:#fff;
+margin-left: 30px;
+border-radius: 50px;
+}
+#search{
+    border-radius: 50px;
+    border: none;
+    margin-top: 10px;
+    background: #E0FFFF;
+    outline: none;
+    padding: 10px 30px 10px 30px;
+}
+#infoblock{
+    display: none;
+    margin-top: 100px;
+}

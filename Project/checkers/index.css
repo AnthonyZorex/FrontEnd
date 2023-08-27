@@ -1,0 +1,30 @@
+.grid-container {
+  max-width: 800px;
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    border:3px solid slategrey;
+}
+.grid-element 
+{
+    color: #fff;
+    min-height: 100px;
+    min-width: 100px;
+    border: 1px solid #fff;
+}
+.amount{
+    height: 60px;
+    width: 60px;
+    margin-left: 20px;
+    margin-top: 20px;
+    border-radius: 50px;
+    align-items: center;
+    background-color: white;
+    border:2px solid slategrey;
+}
+.radiuAmount{
+    height: 50px;
+    width: 50px;
+    border-radius: 50px;
+    border:2px solid slategrey;
+}
