@@ -1,9 +1,13 @@
 let main = document.querySelector("#main");
 let page = document.querySelector("#pageList");
 let numberPage = 1;
-let serchbox = document.getElementById("serchfilm");
-let startSerchfilm = document.getElementById("startSerchFilm");
-let counter = 0;
+let serchnumberPage = 1;
+let serchbox = document.querySelector("#serchfilm");
+let startSerchfilm = document.querySelector("#startSerchFilm");
+/* let counter = 0; */
+let ul = document.querySelector('ul');
+let nextPage = document.createElement("p");
+let lang = document.querySelector("#lang");
 async function modal(){
     try{
         let res = await fetch("https://kinopoiskapiunofficial.tech/api/v2.2/films/4664634",{
@@ -15,8 +19,6 @@ async function modal(){
         });
 
         let data = await res.json();
-        console.log(data);
-
     }
     catch(e){
         console.error(e);
@@ -25,7 +27,7 @@ async function modal(){
 modal()
 async function searchContent(){
     try{
-          let  res = await fetch(`https://kinopoiskapiunofficial.tech/api/v2.2/films?keyword=${serchbox.value}`, {
+          let  res = await fetch(`https://kinopoiskapiunofficial.tech/api/v2.2/films?keyword=${serchbox.value}&page=${serchnumberPage}`, {
             method: 'GET',
             headers: {
                 'X-API-KEY': 'd7121e90-ece4-4aaf-8898-0c42b7a27b88',
@@ -33,6 +35,14 @@ async function searchContent(){
             },
         });
         let data = await res.json();
+        console.log(data);
+        if(data[`total`]===0){
+            alert("not found film!");
+            ul.style.display="none";
+        }
+        else{
+            ul.style.display="flex";
+        }
         return data;
     }
     catch(e){
@@ -40,71 +50,14 @@ async function searchContent(){
     }
 } 
 
-startSerchfilm.addEventListener("click",()=>{
- 
-    searchContent().then((film)=>{
-        console.log(film);
-        let docs = document.querySelectorAll(".block");
-            docs.forEach((e)=>{
-                
-            })
-            
-            for(let i =0;i<film['items'].length;i++)
-            {
-                let doc = document.createElement('div');
-                doc.classList.add("block");
-
-                let raiting = document.createElement("h6");
-
-                let divRaiting = document.createElement("div");
-
-                divRaiting.classList.add("raiting");
-                
-                raiting.textContent = String(film["items"][`${i}`][`ratingImdb`]);
-
-                if(film["items"][`${i}`][`ratingImdb`]>8){
-                    divRaiting.style.border="2px solid green";
-                }
-                else if(film["items"][`${i}`][`ratingImdb`]>5) divRaiting.style.border="2px solid orange";
-        
-                else divRaiting.style.border="2px solid red"; 
-
-                divRaiting.appendChild(raiting);
-                let h1 = document.createElement('h1');
-                let imageSrc = String(film["items"][`${i}`][`posterUrl`]);
-                let img = document.createElement("img");
-                img.src=`${imageSrc}`;
-                img.style.height="400px";
-                img.style.width="200px";
-                h1.textContent = String(film["items"][`${i}`][`nameRu`]); 
-                doc.append(h1,img,divRaiting);
-                main.append(doc);
-                let allLinks = document.querySelectorAll("li");
-                for(let i =0;i<allLinks.length;i++){
-                    allLinks[i].remove();
-                }
-                let n = 0;
-                if(film['items'].length>20){
-                    n++;
-                    let li = document.createElement("li");
-                    let link = document.createElement("a");
-                    link.textContent = i;
-                    li.append(link);
-                    li.classList.add("pageList");
-                    page.append(li);
-                }
-             }        
-         })
-    });
-    startSerchfilm.addEventListener("keydown",(e)=>{
-    if(e.code === 'Enter'){
+function serchData(){
+    try{
         searchContent().then((film)=>{
-            console.log(film);
             let docs = document.querySelectorAll(".block");
                 docs.forEach((e)=>{
-                    
+                    e.remove();
                 })
-                
+                console.log(film);
                 for(let i =0;i<film['items'].length;i++)
                 {
                     let doc = document.createElement('div');
@@ -115,8 +68,27 @@ startSerchfilm.addEventListener("click",()=>{
                     let divRaiting = document.createElement("div");
     
                     divRaiting.classList.add("raiting");
+
+                if(String(film["items"][`${i}`][`ratingKinopoisk`])!='null')
+                {
+                    if(String(film["items"][`${i}`][`ratingKinopoisk`]).length>3)
+                    {
+                        let rait = String(film["items"][`${i}`][`ratingKinopoisk`]).slice(0,1) +"."+String(film["items"][`${i}`][`ratingKinopoisk`]).slice(3,4);
+                        raiting.textContent = rait;
+                    }
+                    else
+                    raiting.textContent = String(film["items"][`${i}`][`ratingKinopoisk`]).slice(0,3);
+                }
+                else{
+                    if(String(film["items"][`${i}`][`ratingImdb`]).length>3)
+                    {
+                        let rait = String(film["items"][`${i}`][`ratingImdb`]).slice(0,1) +"."+String(film["items"][`${i}`][`ratingImdb`]).slice(3,4);
+                        raiting.textContent = rait;
+                    }
+                    else
+                    raiting.textContent = String(film["items"][`${i}`][`ratingImdb`]).slice(0,3);
+                }
                     
-                    raiting.textContent = String(film["items"][`${i}`][`ratingImdb`]);
     
                     if(film["items"][`${i}`][`ratingImdb`]>8){
                         divRaiting.style.border="2px solid green";
@@ -132,28 +104,187 @@ startSerchfilm.addEventListener("click",()=>{
                     img.src=`${imageSrc}`;
                     img.style.height="400px";
                     img.style.width="200px";
-                    h1.textContent = String(film["items"][`${i}`][`nameRu`]); 
+                    if(lang.value ==="RU")
+                        h1.textContent = String(film[`items`][`${i}`][`nameRu`]); 
+                        else
+                        h1.textContent = String(film[`films`][`${i}`][`nameEn`]); 
+
+                    lang.addEventListener("change",()=>{
+                        if(lang.value ==="RU")
+                        h1.textContent = String(film[`items`][`${i}`][`nameRu`]); 
+                        else
+                        h1.textContent = String(film[`films`][`${i}`][`nameEn`]); 
+                    })
                     doc.append(h1,img,divRaiting);
                     main.append(doc);
                     let allLinks = document.querySelectorAll("li");
+                    let allLink = document.querySelectorAll("a");
                     for(let i =0;i<allLinks.length;i++){
                         allLinks[i].remove();
+                        allLink[i].remove();
+                        nextPage.style.display="none";
                     }
-                    let n = 0;
-                    if(film['items'].length>20){
-                        n++;
+                    for(let i = 1;i<film['totalPages']+1;i++)
+                    {   
                         let li = document.createElement("li");
                         let link = document.createElement("a");
                         link.textContent = i;
                         li.append(link);
+                        serchnumberPage = Number(link.textContent);
                         li.classList.add("pageList");
                         page.append(li);
+                        if(i>6){
+                            li.style.display="none";
+                            document.querySelector("ul").appendChild(nextPage);
+                            nextPage.innerText = "...";
+                            nextPage.classList.add("pageList");
+                            nextPage.style.marginTop="0";
+                            page.append(nextPage);
+                        }
                     }
-                 }        
-             })
+                    let allLinkPages = document.querySelectorAll("a");
+                    allLinkPages.forEach((item)=>{
+                    item.addEventListener("click",()=>{
+                    item.classList.toggle("active");
+                    serchnumberPage=Number(item.textContent) 
+                             
+                    let doc = document.querySelectorAll(".block");
+                    doc.forEach((e)=>{
+                        e.remove();
+                    })
+                    
+                    searchContent().then((e)=>{
+                        for(let i=0;i<e[`items`].length;i++)
+                          {
+                        let doc = document.createElement('div');
+                        doc.classList.add("block");
+        
+                        let raiting = document.createElement("h6");
+                        let divRaiting = document.createElement("div");
+                        divRaiting.classList.add("raiting")
+
+                    // оценочная система рейтинга
+                    if(String(e[`items`][`${i}`][`rating`]).length>3)
+                    {
+                        let rait = String(e[`items`][`${i}`][`ratingImdb`]).slice(0,1) +"."+String(e[`items`][`${i}`][`ratingImdb`]).slice(3,4);
+                        raiting.textContent = rait;
+                    }
+                    else
+                    raiting.textContent = String(e[`items`][`${i}`][`ratingImdb`]).slice(0,3);
+                    
+                    if(e[`items`][`${i}`][`ratingImdb`]>8){
+                        divRaiting.style.border="2px solid green";
+                    }
+                    else if(e[`items`][`${i}`][`ratingImdb`]>5) divRaiting.style.border="2px solid orange";
+                    else divRaiting.style.border="2px solid red";
+                    divRaiting.appendChild(raiting);
+        
+                    //добавление Элементов в дом дерево
+                    let h1 = document.createElement('h1');
+                    let imageSrc = String(e[`items`][`${i}`][`posterUrl`]);
+                    let img = document.createElement("img");
+                    img.src=`${imageSrc}`;
+                    img.style.height="400px";
+                    img.style.width="200px";
+
+                   if(lang.value ==="RU")
+                        h1.textContent = String(film[`items`][`${i}`][`nameRu`]); 
+                        else
+                        h1.textContent = String(film[`films`][`${i}`][`nameEn`]); 
+
+                    lang.addEventListener("change",()=>{
+                        if(lang.value ==="RU")
+                        h1.textContent = String(e[`items`][`${i}`][`nameRu`]); 
+                        else
+                        h1.textContent = String(e[`films`][`${i}`][`nameEn`]); 
+                    })
+                    doc.append(h1,img,divRaiting);
+                    main.append(doc);
+                }});
+    
+                })})}        
+            })
+            searchContent().then((film)=>{
+            for(let i = 0 ;i<film['items'].length;i++)
+            {
+            let doc = document.createElement('div');
+            doc.classList.add("block");
+            let raiting = document.createElement("h6");
+            let divRaiting = document.createElement("div");
+            divRaiting.classList.add("raiting")
+             
+            if(String(film["items"][`${i}`][`ratingKinopoisk`]).length>3)
+            {
+                let rait = String(filma["items"][`${i}`][`ratingKinopoisk`]).slice(0,1) +"."+String(filma["items"][`${i}`][`ratingKinopoisk`]).slice(3,4);
+                raiting.textContent = rait;
+            }
+            else
+            raiting.textContent = String(film["items"][`${i}`][`ratingImdb`]).slice(0,3);
+          
+            if(film[`items`][`${i}`][`ratingImdb`]>8){
+                divRaiting.style.border="2px solid green";
+            }
+            else if(film[`items`][`${i}`][`ratingImdb`]>5) divRaiting.style.border="2px solid orange";
+            else divRaiting.style.border="2px solid red";
+
+            divRaiting.appendChild(raiting);
+            let h1 = document.createElement('h1');
+            let imageSrc = String(film[`items`][`${i}`][`posterUrl`]);
+            let img = document.createElement("img");
+            img.src=`${imageSrc}`;
+            img.style.height="400px";
+            img.style.width="250px";
+
+           if(lang.value ==="RU")
+                        h1.textContent = String(film[`items`][`${i}`][`nameRu`]); 
+                        else
+                        h1.textContent = String(film[`films`][`${i}`][`nameEn`]); 
+
+            lang.addEventListener("change",()=>{
+                if(lang.value ==="RU")
+                h1.textContent = String(film[`items`][`${i}`][`nameRu`]); 
+                else
+                h1.textContent = String(film[`films`][`${i}`][`nameEn`]); 
+            })
+            
+            doc.append(h1,img,divRaiting);
+            main.append(doc);
+        } 
+        let imgArray = document.querySelectorAll("img");
+        imgArray.forEach((item)=>{
+            item.addEventListener("click",()=>{
+                //модальное окно 
+                let modal = document.querySelector(".modal");
+                let h1_titile = document.querySelector("#film_title");
+                let img_poster = document.querySelector("#poster");
+
+                searchContent().then((film)=>{
+                    for(let i = 0 ;i<film['items'].length;i++){
+                        h1_titile.textContent = String(film[`items`][`${item}`][`nameRu`]); 
+                    }
+                })
+                modal.style.display = "block";
+                let span = document.querySelector(".close");
+                span.addEventListener("click",()=>{
+                    modal.style.display = "none";
+                }) 
+                window.onclick = function(event) {
+                    if (event.target == modal) {
+                        modal.style.display = "none";
+                    }
+                }  
+            })
+            })
+        })
     }
-       
-        });
+    catch (e){
+        console.error(e);
+    }
+    }
+
+
+    startSerchfilm.addEventListener("click",()=> serchData()) 
+    serchbox.addEventListener("keydown",(e)=>{if(e.code === 'Enter')serchData()})
     
 async function pageList(){
     try{
@@ -182,9 +313,7 @@ async function connect(){
             },
         });
         let data = await respons.json();
-        let  smt = document.createElement("p");
         //создание страниц
-
         for(let i = 1 ;i<data["pagesCount"];i++)
         {     
             let li = document.createElement("li");
@@ -196,20 +325,33 @@ async function connect(){
             page.append(li);
             if(i>5){
                 li.style.display="none";
-                document.querySelector("ul").appendChild(smt);
-                smt.innerText = "...";
-                smt.classList.add("pageList");
-                smt.style.marginTop="0";
-                page.append(smt);
+                document.querySelector("ul").appendChild(nextPage);
+                nextPage.innerText = "...";
+                nextPage.classList.add("pageList");
+                nextPage.style.marginTop="0";
+                page.append(nextPage);
             }
-            console.log(data);
         }
         // работа с страницами
-        let allLinks = document.querySelectorAll("a");
-        allLinks.forEach((item)=>{
+          let pageNamber = 0;
+          let allLinks = document.querySelectorAll("li");
+          allLinks.forEach((item)=>{
           item.addEventListener("click",()=>{
-            item.style.color ="red";
-            counter ++;
+           if((allLinks[Number(item.textContent)]).style.display === "none")
+            {  
+                (allLinks[Number(item.textContent)]).style.display = "block";
+                allLinks[pageNamber].style.display = "none";
+                pageNamber++;
+            }
+            console.log(pageNamber);
+            if(allLinks[pageNamber].style.display === "none")    
+            {
+                
+                allLinks[pageNamber].style.display = "block";
+          /*       (allLinks[Number(item.textContent)]).style.display = "none"; */
+                
+            }
+
             numberPage=Number(item.textContent)           
             let doc = document.querySelectorAll(".block");
             doc.forEach((e)=>{
@@ -217,7 +359,7 @@ async function connect(){
             })
                 pageList().then((e)=>{
                 for(let i=0;i<e[`films`].length;i++)
-                  {
+                {
                 let doc = document.createElement('div');
                 doc.classList.add("block");
 
@@ -225,7 +367,12 @@ async function connect(){
             let divRaiting = document.createElement("div");
             divRaiting.classList.add("raiting")
             // оценочная система рейтинга
-            raiting.textContent = String(e[`films`][`${i}`][`rating`]);
+            if(String(data[`films`][`${i}`][`rating`]).length>3){
+                let rait = String(data[`films`][`${i}`][`rating`]).slice(0,1) +"."+String(data[`films`][`${i}`][`rating`]).slice(3,4);
+                raiting.textContent = rait;
+            }
+            else
+            raiting.textContent = String(data[`films`][`${i}`][`rating`]).slice(0,3);
             if(e[`films`][`${i}`][`rating`]>8){
                 divRaiting.style.border="2px solid green";
             }
@@ -240,26 +387,40 @@ async function connect(){
             img.src=`${imageSrc}`;
             img.style.height="400px";
             img.style.width="200px";
+            if(lang.value ==="RU")
             h1.textContent = String(e[`films`][`${i}`][`nameRu`]); 
+            else
+            h1.textContent = String(e[`films`][`${i}`][`nameEn`]); 
+            lang.addEventListener("change",()=>{
+                if(lang.value ==="RU")
+                h1.textContent = String(e[`films`][`${i}`][`nameRu`]); 
+                else
+                h1.textContent = String(e[`films`][`${i}`][`nameEn`]); 
+            })
             doc.append(h1,img,divRaiting);
             main.append(doc);
         }});
-        
-    })})
-        
-        for(let i = 0 ;i<data[`films`].length;i++)
+        })})
+         for(let i = 0 ;i<data[`films`].length;i++)
         {
             let doc = document.createElement('div');
             doc.classList.add("block");
             let raiting = document.createElement("h6");
             let divRaiting = document.createElement("div");
             divRaiting.classList.add("raiting")
-            raiting.textContent = String(data[`films`][`${i}`][`rating`]);
+            if(String(data[`films`][`${i}`][`rating`]).length>3){
+                let rait = String(data[`films`][`${i}`][`rating`]).slice(0,1) +"."+String(data[`films`][`${i}`][`rating`]).slice(3,4);
+                raiting.textContent = rait;
+            }
+            else
+            raiting.textContent = String(data[`films`][`${i}`][`rating`]).slice(0,3); 
             if(data[`films`][`${i}`][`rating`]>8){
                 divRaiting.style.border="2px solid green";
             }
             else if(data[`films`][`${i}`][`rating`]>5) divRaiting.style.border="2px solid orange";
+
             else divRaiting.style.border="2px solid red";
+
             divRaiting.appendChild(raiting);
             let h1 = document.createElement('h1');
             let imageSrc = String(data[`films`][`${i}`][`posterUrl`]);
@@ -267,10 +428,20 @@ async function connect(){
             img.src=`${imageSrc}`;
             img.style.height="400px";
             img.style.width="250px";
+            if(lang.value ==="RU")
             h1.textContent = String(data[`films`][`${i}`][`nameRu`]); 
+            else
+            h1.textContent = String(data[`films`][`${i}`][`nameEn`]); 
+
+            lang.addEventListener("change",()=>{
+                if(lang.value ==="RU")
+                h1.textContent = String(data[`films`][`${i}`][`nameRu`]); 
+                else
+                h1.textContent = String(data[`films`][`${i}`][`nameEn`]); 
+            })
             doc.append(h1,img,divRaiting);
             main.append(doc);
-        }
+        } 
         let imgArray = document.querySelectorAll("img");
         imgArray.forEach((item)=>{
             let modalblock =`
@@ -302,16 +473,12 @@ async function connect(){
                     if (event.target == modal) {
                         modal.style.display = "none";
                     }
-                }
-                
-            })/* ["filmId"] */
-
-            {/* <video width="320" height="240" controls>
-            <source src="movie.mp4" type="video/mp4">
-            </video>
-            https://kinopoiskapiunofficial.tech/api/v2.2/films/4889667/videos */}
+                }  
+            })
+            {
+            
+               }
         })
-        
     }
     catch(e){
         console.error(e);
@@ -322,7 +489,10 @@ connect()
 
 
 
-
+ /* <video width="320" height="240" controls>
+            <source src="movie.mp4" type="video/mp4">
+            </video>
+            https://kinopoiskapiunofficial.tech/api/v2.2/films/4889667/videos */
 
 
 
