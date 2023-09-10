@@ -23,37 +23,37 @@ async function wether(){
                 humidity.textContent = String(data['main']['humidity'])+"%";
                 wetherElement.textContent = String(Math.round(data['main']['temp'])+" "+"°C");
                 wind.textContent = String(data['wind']['speed'])+" "+"km/h";
-               return document.getElementById("icon").src = "/images/clear.png";
+               return document.getElementById("icon").src = "images/clear.png";
             }
             else if(String(data["weather"][0]["main"])==="Clouds"){
                 humidity.textContent = String(data['main']['humidity'])+"%";
                 wetherElement.textContent = String(Math.round(data['main']['temp'])+" "+"°C");
                 wind.textContent = String(data['wind']['speed'])+" "+"km/h";
-                return  document.getElementById("icon").src = "/images/clouds.png";
+                return  document.getElementById("icon").src = "images/clouds.png";
             }
             else if(String(data["weather"][0]["main"])==="Rain"){
                 humidity.textContent = String(data['main']['humidity'])+"%";
                 wetherElement.textContent = String(Math.round(data['main']['temp'])+" "+"°C");
                 wind.textContent = String(data['wind']['speed'])+" "+"km/h";
-                return  document.getElementById("icon").src = "/images/rain.png";
+                return  document.getElementById("icon").src = "images/rain.png";
             }
             else if(String(data["weather"][0]["main"])==="Snow"){
                 humidity.textContent = String(data['main']['humidity'])+"%";
                 wetherElement.textContent = String(Math.round(data['main']['temp'])+" "+"°C");
                 wind.textContent = String(data['wind']['speed'])+" "+"km/h";
-                return  document.getElementById("icon").src = "/images/snow.png";
+                return  document.getElementById("icon").src = "images/snow.png";
             }
             else if(String(data["weather"][0]["main"])==="Drizzle"){
                 humidity.textContent = String(data['main']['humidity'])+"%";
                 wetherElement.textContent = String(Math.round(data['main']['temp'])+" "+"°C");
                 wind.textContent = String(data['wind']['speed'])+" "+"km/h";
-                return  document.getElementById("icon").src = "/images/drizzle.png";
+                return  document.getElementById("icon").src = "images/drizzle.png";
             }
             else if(String(data["weather"][0]["main"])==="Mist"){
                 humidity.textContent = String(data['main']['humidity'])+"%";
                 wetherElement.textContent = String(Math.round(data['main']['temp'])+" "+"°C");
                 wind.textContent = String(data['wind']['speed'])+" "+"km/h";
-                return  document.getElementById("icon").src = "/images/mist.png";
+                return  document.getElementById("icon").src = "images/mist.png";
             }
         }
     }
