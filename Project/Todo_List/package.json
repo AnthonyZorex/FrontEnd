@@ -1,0 +1,16 @@
+{
+  "name": "todo_list",
+  "version": "1.0.0",
+  "description": "to do list",
+  "main": "index.js",
+  "scripts": {
+    "test": "hello world",
+    "start": "node index.js"
+  },
+  "author": "Anthony Bonetta",
+  "license": "ISC",
+  "dependencies": {
+    "msnodesqlv8": "^4.1.0",
+    "mysql": "^2.18.1"
+  }
+}
