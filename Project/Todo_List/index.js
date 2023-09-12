@@ -1,27 +1,46 @@
-const http = require('http');
- 
-const hostname = '127.0.0.1';
-const port = 3000;
- 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  
-  const fs = require("fs");
- 
-// асинхронное чтение
-fs.readFile("todoList.txt", "utf-8", 
-            function(error,data){
-                if(error) throw error; // если возникла ошибка
-                res.end(data);  // выводим считанные данные
-});
-})
-// синхронное чтение
-/* console.log("Синхронное чтение файла")
-let fileContent = fs.readFileSync("todoList.txt", "utf-8");
-res.end(fileContent);
+/* const sql = require("msnodesqlv8");
+
+const connectionString = "server=(localdb)\MSSqlLocalDb;Database=Project_Dezert.Data;Trusted_Connection=Yes;Driver={SQL Server 15.0.4153}";
+const query = "SELECT name FROM sys.databases";
+
+sql.query(connectionString, query, (err, rows) => {
+    console.log(rows);
 }); */
- 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
+var express = require('express');
+var app = express();
+
+app.get('/', function (req, res) {
+   
+    var sql = require("mssql");
+
+    // config for your database
+    var config = {
+        user: 'TONIK\barni',
+        password: '30082001',
+        server: 'localhost', 
+        database: 'Project_Dezert.Data'
+    };
+
+    // connect to your database
+    sql.connect(config, function (err) {
+    
+        if (err) console.log(err);
+
+        // create Request object
+        var request = new sql.Request();
+           
+        // query to the database and get the records
+        request.query('select * from Student', function (err, recordset) {
+            
+            if (err) console.log(err)
+
+            // send records as a response
+            res.send(recordset);
+            
+        });
+    });
+});
+
+var server = app.listen(5000, function () {
+    console.log('Server is running..');
 });
